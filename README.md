@@ -8,8 +8,7 @@
 > - **Step 3:** A production-grade secure baseline including KMS-encrypted VPC Flow Logs, remote state backend, security/compliance mapping, and CI/CD validation.
 
 
----
-
+<br>
 
 ##  What This Project Creates
 - **VPC** with DNS hostnames and DNS support enabled
@@ -21,24 +20,23 @@
 - **EC2 instance** launched in one of the public subnets
 - **Security Group** with rules defined in the compute module
 
-
----
-
+<br>
 
 ##  Project Structure
 
+```plaintext
 terraform-secure-vpc-ec2/
 ├── providers.tf
 ├── variables.tf
 ├── outputs.tf
-├── main.tf                 # calls modules
+├── main.tf                  # calls modules
 ├── modules/
 │   ├── network/
-│   │   ├── main.tf         # VPC, IGW, public subnets, route table, associations
+│   │   ├── main.tf          # VPC, IGW, public subnets, route table, associations
 │   │   ├── variables.tf
 │   │   └── outputs.tf
 │   └── compute/
-│       ├── main.tf         # EC2 + Security Group
+│       ├── main.tf          # EC2 + Security Group
 │       ├── variables.tf
 │       └── outputs.tf
 └── docs/
@@ -51,9 +49,9 @@ terraform-secure-vpc-ec2/
         ├── ec2-public-details.png
         ├── sg-rules.png
         └── terraform-output.png
+```
 
-
----
+<br>
 
 ## How to Run
 ```bash
@@ -62,7 +60,7 @@ terraform plan
 terraform apply
 ```
 
----
+<br>
 
 ## Screenshots
 

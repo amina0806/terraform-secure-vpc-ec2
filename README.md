@@ -108,7 +108,8 @@ The design ensures the EC2 instance is **not exposed to the internet** and is ma
 
 ---
 
-**What this proves:**  
+## What This Project Proves:
+
 ✅ I can design and codify a **bastionless architecture** using Terraform  
 ✅ I enforce **least-privilege networking** (egress-only, no inbound)  
 ✅ I apply **security best practices**: IMDSv2, EBS encryption, IAM roles, SSM access  
@@ -162,7 +163,7 @@ terraform apply
 ```
 <br> 
 
-## 📸 Screenshots (Step 2)
+## Screenshots (Step 2)
 
 | Step | Screenshot |
 |------|------------|

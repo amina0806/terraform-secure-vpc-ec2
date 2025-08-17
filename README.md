@@ -1,8 +1,8 @@
 
 # Terraform Secure VPC + EC2
 
-This project demonstrates how to design and harden a **3-tier AWS VPC + EC2 environment** with Terraform.  
-It proves my ability to:
+This project demonstrates the design and security hardening of a 3-tier AWS VPC and EC2 environment with Terraform.
+
 - Build a **secure VPC architecture** with public and private subnets
 - Enforce **least-privilege networking** (egress-only SG, no public IPs)
 - Configure **SSM Session Manager** for bastionless access
@@ -10,9 +10,10 @@ It proves my ability to:
 - Map technical controls to **ISO/IEC 27001 Annex A**
 
 
-## ✅ What this proves to you
+##  What This Project Proves
 
-I can **design, codify, and validate secure AWS infrastructure as code (IaC)**:
+Demonstrates my ability to design, codify, and validate **secure AWS infrastructure using Infrastructure as Code (IaC)**
+
 - **Step 1:** VPC + Public EC2 (restricted SSH + demo HTTP ingress)
 - **Step 2:** Private EC2 with **SSM-only access**, no SSH, no public IP
 - Clear **screenshots evidence** in `/docs/screenshots`

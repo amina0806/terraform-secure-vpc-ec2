@@ -16,6 +16,7 @@ Demonstrates my ability to design, codify, and validate **secure AWS infrastruct
 
 - **Step 1:** VPC + Public EC2 (restricted SSH + demo HTTP ingress)
 - **Step 2:** Private EC2 with **SSM-only access**, no SSH, no public IP
+- **Step 3:** Endpoints, logging, encryption (Seal the edges & see everything,hardening pass)
 - Clear **screenshots evidence** in `/docs/screenshots`
 - **ISO 27001 mapping** included in README
 

@@ -2,15 +2,15 @@ data "aws_ami" "al2023" {
   most_recent = true
   owners      = ["amazon"]
 
-  filter { 
+  filter {
     name   = "name"
     values = ["al2023-ami-*-x86_64"]
   }
-  filter { 
+  filter {
     name   = "virtualization-type"
     values = ["hvm"]
   }
-  filter { 
+  filter {
     name   = "root-device-type"
     values = ["ebs"]
   }
@@ -21,17 +21,28 @@ resource "aws_security_group" "priv" {
   name        = "${var.name_prefix}-priv-sg"
   description = "Egress-only for private EC2"
   vpc_id      = var.vpc_id
-  tags        = merge(var.tags, { Name = "${var.name_prefix}-priv-sg" })
-}
 
-resource "aws_vpc_security_group_egress_rule" "priv_out" {
-  for_each          = var.deploy_private_instance ? { for p in var.egress_ports : tostring(p) => p } : {}
-  security_group_id = aws_security_group.priv[0].id
-  ip_protocol       = "tcp"
-  from_port         = each.value
-  to_port           = each.value
-  cidr_ipv4         = "0.0.0.0/0"
-  description       = "Allow egress TCP ${each.value}"
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 53
+    to_port     = 53
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 53
+    to_port     = 53
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags        = merge(var.tags, { Name = "${var.name_prefix}-priv-sg" })
 }
 
 resource "aws_iam_role" "ssm" {
@@ -41,9 +52,9 @@ resource "aws_iam_role" "ssm" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
-      Effect = "Allow",
+      Effect    = "Allow",
       Principal = { Service = "ec2.amazonaws.com" },
-      Action   = "sts:AssumeRole"
+      Action    = "sts:AssumeRole"
     }]
   })
   tags = var.tags
@@ -62,22 +73,22 @@ resource "aws_iam_instance_profile" "ssm" {
 }
 
 resource "aws_instance" "private" {
-  count                = var.deploy_private_instance ? 1 : 0
-  ami                  = data.aws_ami.al2023.id
-  instance_type        = var.instance_type_private
-  subnet_id            = var.private_subnet_ids[0]
-  vpc_security_group_ids = [aws_security_group.priv[0].id]
-  iam_instance_profile = aws_iam_instance_profile.ssm[0].name
+  count                       = var.deploy_private_instance ? 1 : 0
+  ami                         = data.aws_ami.al2023.id
+  instance_type               = var.instance_type_private
+  subnet_id                   = var.private_subnet_ids[0]
+  vpc_security_group_ids      = [aws_security_group.priv[0].id]
+  iam_instance_profile        = aws_iam_instance_profile.ssm[0].name
   associate_public_ip_address = false
 
 
   metadata_options {
     http_endpoint = "enabled"
-    http_tokens   = "required" 
+    http_tokens   = "required"
   }
 
   root_block_device {
-    encrypted = true 
+    encrypted = true
   }
 
   tags = merge(var.tags, { Name = "${var.name_prefix}-ec2-private" })

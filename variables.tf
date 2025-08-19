@@ -10,26 +10,6 @@ variable "vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "tags" {
-  description = "Common tags"
-  type        = map(string)
-  default     = {
-    Environment = "dev"
-    Project     = "secure-vpc-ec2"
-  }
-}
-variable "region" {
-  description = "AWS region to deploy resources into"
-  type        = string
-  default     = "us-east-1" 
-}
-
-variable "azs" {
-  description = "AZs to use (index-aligned with subnet CIDRs)"
-  type        = list(string)
-  default     = ["us-east-1a", "us-east-1b"]
-}
-
 variable "public_subnet_cidrs" {
   description = "CIDRs for public subnets"
   type        = list(string)
@@ -40,4 +20,30 @@ variable "private_subnet_cidrs" {
   description = "CIDRs for private subnets"
   type        = list(string)
   default     = ["10.0.2.0/24", "10.0.3.0/24"]
+}
+
+variable "region" {
+  description = "AWS region to deploy resources into"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "azs" {
+  description = "AZs to use (index-aligned with subnet CIDRs)"
+  type        = list(string)
+  default     = ["us-east-1a", "us-east-1b"]
+}
+
+variable "tags" {
+  description = "Common tags"
+  type        = map(string)
+  default = {
+    Environment = "dev"
+    Project     = "secure-vpc-ec2"
+  }
+}
+
+variable "priv_sg_id" {
+  description = "Security group ID for private EC2 instance"
+  default     = "sg-053dbbc3c2b165428"
 }

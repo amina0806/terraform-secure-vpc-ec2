@@ -49,3 +49,4 @@ resource "aws_instance" "public" {
 
   tags = merge(var.tags, { Name = "${var.name_prefix}-${var.instance_name}" })
 }
+

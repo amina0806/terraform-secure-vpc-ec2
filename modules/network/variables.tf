@@ -1,36 +1,50 @@
 variable "name_prefix" {
-  type = string
-}
-
-variable "vpc_cidr" {
-  type = string
-}
-
-variable "azs" {
-  type = list(string)
-}
-
-variable "public_subnet_cidrs" {
-  type = list(string)
-}
-
-variable "private_subnet_cidrs" {
-  type    = list(string)
-  default = []
+  description = "Name prefix for resources"
+  type        = string
 }
 
 variable "tags" {
-  type = map(string)
+  description = "Common tags"
+  type        = map(string)
+  default     = {}
+}
+
+variable "vpc_cidr" {
+  description = "CIDR for the VPC"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+
+variable "azs" {
+  description = "AZs used for subnets, index-aligned with cidr lists"
+  type        = list(string)
+}
+
+variable "public_subnet_cidrs" {
+  description = "List of public subnet CIDRs, index-aligned with azs"
+  type        = list(string)
+  default     = []
+}
+
+variable "private_subnet_cidrs" {
+  description = "List of private subnet CIDRs, index-aligned with azs"
+  type        = list(string)
 }
 
 variable "create_nat" {
-  description = "Create a NAT Gateway for private subnets"
+  description = "Whether to create NAT resources"
+  type        = bool
+  default     = false
+}
+
+variable "single_nat_gateway" {
+  description = "Single NAT Gateway for all private subnets if true"
   type        = bool
   default     = true
 }
 
-variable "single_nat_gateway" {
-  description = "Use a single NAT Gateway in the first public subnet"
-  type        = bool
-  default     = true
+variable "logs_bucket_name" {
+  description = "Optional custom name for the logs bucket"
+  type        = string
+  default     = null
 }

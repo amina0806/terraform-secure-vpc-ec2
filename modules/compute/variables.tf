@@ -1,7 +1,13 @@
 # ── Common ─────────────────────────────────────────────────────────────────────
-variable "name_prefix" { type = string }
-variable "vpc_id"      { type = string }
-variable "tags"        { type = map(string) }
+variable "name_prefix" { 
+  type = string 
+}
+variable "vpc_id" { 
+  type = string 
+}
+variable "tags" { 
+  type = map(string) 
+}
 
 # ── Step 1 (Public EC2) —
 variable "deploy_public_instance" {
@@ -63,4 +69,19 @@ variable "egress_ports" {
   description = "Allowed egress TCP ports from private EC2"
   type        = list(number)
   default     = [80, 443]
+}
+
+variable "enable_ebs_encryption_default" {
+  type    = bool
+  default = true
+}
+
+variable "ebs_kms_alias" {
+  type    = string
+  default = "alias/ebs-default"
+}
+
+variable "app_sg_id" {
+  type        = string
+  description = "ID of the application security group"
 }

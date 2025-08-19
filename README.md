@@ -1,77 +1,88 @@
-
-# Terraform Secure VPC + EC2
-
-This project demonstrates the design and security hardening of a 3-tier AWS VPC and EC2 environment with Terraform.
-
-- Build a **secure VPC architecture** with public and private subnets
-- Enforce **least-privilege networking** (egress-only SG, no public IPs)
-- Configure **SSM Session Manager** for bastionless access
-- Apply **security best practices**: IMDSv2 required, EBS encryption, NAT for controlled outbound
-- Map technical controls to **ISO/IEC 27001 Annex A**
+# 🌐 Terraform Secure VPC + EC2 — Portfolio Project  
 
 
-##  What This Project Proves
+## 📘 Overview  
+This portfolio demonstrates how to **design, harden, and document secure AWS workloads** using Terraform.  
+It evolves across **three steps**, each adding stronger security and compliance layers:  
 
-Demonstrates my ability to design, codify, and validate **secure AWS infrastructure using Infrastructure as Code (IaC)**
+1. **Step 1 — Public EC2 + ALB**  
+   - Basic VPC, Internet Gateway, Security Groups  
+   - Application Load Balancer + Public EC2  
 
-- **Step 1:** VPC + Public EC2 (restricted SSH + demo HTTP ingress)
-- **Step 2:** Private EC2 with **SSM-only access**, no SSH, no public IP
-- **Step 3:** Endpoints, logging, encryption ((no NAT, full visibility))
-- Clear **screenshots evidence** in `/docs/screenshots`
-- **ISO 27001 mapping** included in README
+2. **Step 2 — Private EC2 (SSM only)**  
+   - Private Subnets + NAT Gateway  
+   - Private EC2 (no public IP) managed via **Session Manager**  
+   - Encrypted EBS volumes + IMDSv2 enforced  
+
+3. **Step 3 — Centralized Logging + VPC Endpoints**  
+   - Default EBS encryption enabled  
+   - VPC Flow Logs → S3 with SSE-KMS (CMK protected)  
+   - VPC Endpoints for SSM, EC2 Messages, and S3  
+   - Scoped Security Groups for least privilege  
+
+---
+
+##  What This Portfolio Demonstrates  
+- Secure AWS infrastructure **codified with Terraform**  
+- Application of **security best practices**: encryption, least privilege, bastionless access  
+- Mapping of technical design to **ISO/IEC 27001 Annex A controls**  
+- **Evidence-based documentation**: screenshots + Terraform code  
+
+
+---
+
+##  ISO/IEC 27001 Annex A Coverage  
+
+| Step | Controls Implemented |
+|------|-----------------------|
+| **Step 1** | A.8.24 Data leakage prevention (SG rules)<br>A.5.23 Cloud security (subnet segregation) |
+| **Step 2** | A.8.20 Use of cryptography (EBS encryption)<br>A.8.28 Secure authentication (IMDSv2)<br>A.8.16 Identity & access control (IAM role for SSM)<br>A.8.24 Data leakage prevention (no public IP)<br>A.5.23 Cloud security (bastionless via SSM) |
+| **Step 3** | A.12.4 Logging & monitoring (Flow Logs to S3)<br>A.8.20 Use of cryptography (SSE-KMS, CMK)<br>A.8.24 Data leakage prevention (VPC endpoints)<br>A.5.23 Cloud security (private-only + audit trail)<br>A.8.16 Identity & access control (SSM least privilege) |
+
+📄 Full mappings: [`docs/iso27001-mapping.md`](docs/iso27001-mapping.md)  
+
 
 <br>
 
-> **Note:** This is **Step 1 &2** of a multi-step project.  
-> The goal here is to establish the basic AWS networking foundation with a public VPC and EC2 instance.  
-> This foundation will be expanded into:
-> - **Step 2:** A secure private VPC with EC2 in private subnets, accessed via Session Manager, with VPC Endpoints for SSM, logging, and S3 — no NAT required.
-> - **Step 3:** A production-grade secure baseline including KMS-encrypted VPC Flow Logs, remote state backend, security/compliance mapping, and CI/CD validation.
+
+## 🖼️ Architecture Diagram  
+![Architecture Diagram](docs/diagrams/architecture-diagram.png)  
+
 
 <br>
 
-##  What This Project Creates
-- **VPC** with DNS hostnames and DNS support enabled
-- **Internet Gateway (IGW)**
-- **Two public subnets** across different Availability Zones (using `for_each`)
-  - `map_public_ip_on_launch = true`
-- **Public route table** with a default route to the IGW
-- **Route table associations** from each public subnet to the public route table
-- **EC2 instance** launched in one of the public subnets
-- **Security Group** with rules defined in the compute module
+## Project Structure  
 
-<br>
-
-##  Project Structure
-
-```plaintext
+```bash
 terraform-secure-vpc-ec2/
 ├── providers.tf
 ├── variables.tf
 ├── outputs.tf
-├── main.tf                  # calls modules
+├── main.tf
 ├── modules/
-│   ├── network/
-│   │   ├── main.tf          # VPC, IGW, public subnets, route table, associations
-│   │   ├── variables.tf
-│   │   └── outputs.tf
-│   └── compute/
-│       ├── main.tf          # EC2 + Security Group
-│       ├── variables.tf
-│       └── outputs.tf
+│   ├── compute/
+│   │   ├── main.tf                # Step 1 - Public EC2
+│   │   ├── private.tf             # Step 2 - Private EC2
+│   │   ├── step3_encryption.tf    # Step 3 - Encrypted EBS
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   └── network/
+│       ├── main.tf                # Step 1 - VPC, IGW
+│       ├── private.tf             # Step 2 - Private subnets + NAT
+│       ├── step3_endpoints+logging.tf  # Step 3 - Endpoints + Flow Logs
+│       ├── locals.tf
+│       ├── outputs.tf
+│       └── variables.tf
 └── docs/
+    ├── diagrams/
+    │   └── architecture-diagram.png
+    ├── iso27001-mapping.md
     └── screenshots/
-        ├── vpc-overview.png
-        ├── igw.png
-        ├── subnets-public.png
-        ├── rtb-public.png
-        ├── rtb-associations.png
-        ├── ec2-public-details.png
-        ├── sg-rules.png
-        └── terraform-output.png
-```
+        ├── step1/
+        ├── step2/
+        └── step3/
 
-<br>
+```
 
 ## How to Run
 ```bash
@@ -79,8 +90,50 @@ terraform init
 terraform plan
 terraform apply
 ```
-
 <br>
+<br>
+<br>
+
+---
+
+# 📘 **Step 1**  
+
+# Terraform Secure VPC + EC2 — Step 1 (Public EC2 + ALB)
+
+## Project Description  
+This step builds the **foundation VPC** with public subnets, an Internet Gateway, and a demo EC2 instance behind an ALB.  
+It establishes the base networking layer to be secured and extended in later steps.  
+
+---
+
+## What This Step Proves  
+- I can codify a **basic VPC architecture** with Terraform  
+- I can configure **Internet Gateway, routing, and public subnets**  
+- I can launch a **public EC2 instance behind an ALB**  
+- I can apply **initial ISO/IEC 27001 Annex A mappings**  
+
+---
+
+## Project Structure (Step 1)  
+
+```bash
+terraform-secure-vpc-ec2/
+├── main.tf
+├── providers.tf
+├── variables.tf
+├── outputs.tf
+├── modules/
+│   ├── network/
+│   │   ├── main.tf          # VPC, IGW, public subnets, public route table
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   └── compute/
+│       ├── main.tf          # Public EC2 + Security Group
+│       ├── variables.tf
+│       └── outputs.tf
+└── docs/screenshots/step1/
+```
+
 
 ## Screenshots
 
@@ -95,8 +148,23 @@ terraform apply
 | ✅ Security Group Rules | ![SG Rules](docs/screenshots/step1/sg-rules.png) |
 | ✅ Terraform Apply Output | ![Terraform Output](docs/screenshots/step1/terraform-output.png) |
 
-<br>
-<br>
+
+---
+
+## Security Highlights
+- **Basic segregation of subnets** → Public vs private  
+- **Security Groups** → Limit inbound traffic  
+- **Foundation** → Compliance-ready design  
+
+---
+
+## ISO/IEC 27001 Annex A Mapping
+- **A.8.24 Data leakage prevention** → Security Group rules  
+- **A.5.23 Cloud security** → Segregated subnet design  
+
+---
+
+# 📘 **Step 2**  
 
 # Terraform Secure VPC + EC2 — Step 2 (Private EC2 via SSM)
 
@@ -120,49 +188,17 @@ The design ensures the EC2 instance is **not exposed to the internet** and is ma
 
 ##  Project Structure (Step 2)
 
-```plaintext
+```bash
 terraform-secure-vpc-ec2/
-├── providers.tf
-├── variables.tf
-├── outputs.tf
 ├── main.tf
 ├── modules/
 │   ├── network/
-│   │   ├── main.tf              # VPC, IGW, public subnets, public route table
-│   │   ├── private.tf           # ✅ Private subnets, NAT Gateway, private route table
-│   │   ├── variables.tf
-│   │   ├── outputs.tf
-│   │   └── locals.tf
+│   │   ├── private.tf           # Private subnets + NAT Gateway
 │   └── compute/
-│       ├── main.tf              # Public EC2 (Step 1, optional)
-│       ├── private.tf           # ✅ Private EC2 (SSM only, no public IP, IMDSv2, encrypted EBS)
-│       ├── variables.tf
-│       └── outputs.tf
-└── docs/
-    └── screenshots/
-        └── step2/
-            ├── subnets-private.png
-            ├── nat-eip.png
-            ├── nat-gateway.png
-            ├── rtb-private.png
-            ├── rtb-private-associations.png
-            ├── ec2-private-details.png
-            ├── ssm-managed.png
-            ├── ssm-session.png
-            └── terraform-output.png
-
+│       ├── private.tf           # Private EC2 (SSM only, IMDSv2, encrypted EBS)
+└── docs/screenshots/step2/
 
 ```
-
-<br>
-
-## How to Run
-```bash
-terraform init
-terraform plan
-terraform apply
-```
-<br> 
 
 ## Screenshots (Step 2)
 
@@ -200,3 +236,72 @@ terraform apply
 - **A.5.23 Cloud security** → Private subnets, bastionless access via SSM  
 - **A.8.16 Identity & access control** → Scoped IAM role for SSM access  
 
+
+---
+
+# 📘 **Step 3**  
+
+# Terraform Secure VPC + EC2 — Step 3 (Centralized Logging & VPC Endpoints)
+
+## Project Description  
+This step enforces **centralized logging, encryption, and private connectivity**.  
+It ensures auditability and compliance through VPC Flow Logs, KMS protection, and private VPC Endpoints.  
+
+---
+
+## What This Step Proves  
+- I can enforce **encryption at rest & in transit**  
+- I can design **centralized logging** with KMS protection  
+- I can configure **VPC Endpoints** for private-only traffic  
+- I can demonstrate **compliance mapping** with ISO/IEC 27001  
+
+---
+
+## Project Structure (Step 3)  
+
+```bash
+terraform-secure-vpc-ec2/
+├── modules/
+│   ├── compute/
+│   │   ├── step3_encryption.tf      # Encrypted EBS volumes
+│   └── network/
+│       ├── step3_endpoints+logging.tf  # VPC Endpoints + Flow Logs
+└── docs/screenshots/step3/
+
+```
+---
+
+## Screenshots (Step 3)
+
+| Step | Screenshot |
+|------|------------|
+| ✅ Default EBS Encryption Enabled | ![ebs-default-encryption](docs/screenshots/step3/ebs-default-encryption.png) |
+| ✅ EC2 Root Volume Encrypted | ![ec2-root-volume-encrypted](docs/screenshots/step3/ec2-root-volume-encrypted.png) |
+| ✅ KMS CMK Created for Logs | ![kms-logs-key](docs/screenshots/step3/kms-logs-key.png) |
+| ✅ VPC Flow Logs Active | ![vpc-flowlogs-status](docs/screenshots/step3/vpc-flowlogs-status.png) |
+| ✅ VPC Endpoint (Gateway for S3) | ![vpce-gateway-s3](docs/screenshots/step3/vpce-gateway-s3.png) |
+| ✅ VPC Endpoints (SSM, EC2 Messages) | ![vpce-interface-ssm](docs/screenshots/step3/vpce-interface-ssm.png) |
+| ✅ Security Group Scoped to HTTPS | ![vpce-sg-inbound](docs/screenshots/step3/vpce-sg-inbound.png) |
+| ✅ Logs S3 Bucket with SSE-KMS | ![logs-s3-properties](docs/screenshots/step3/logs-s3-properties.png) |
+| ✅ Flow Logs Delivered to S3 | ![logs-s3-flowlogs-object](docs/screenshots/step3/logs-s3-flowlogs-object.png) |
+
+---
+
+## Security Highlights
+- **EBS encryption** → Default + CMK for compliance  
+- **Centralized logging** → Flow Logs → S3 (SSE-KMS)  
+- **Private connectivity** → SSM & S3 endpoints, no internet traversal  
+- **Scoped Security Group** → Only HTTPS traffic allowed  
+- **Bastionless management** → EC2 via SSM only  
+
+---
+
+## ISO/IEC 27001 Annex A Mapping
+- **A.8.20 Use of cryptography** → EBS default encryption, SSE-KMS for logs  
+- **A.12.4 Logging & monitoring** → VPC Flow Logs stored securely in S3  
+- **A.8.24 Data leakage prevention** → VPC Endpoints restrict data paths  
+- **A.5.23 Cloud security** → Private-only design with centralized audit trail  
+- **A.8.16 Identity & access control** → IAM role for SSM (least privilege)  
+- **A.8.28 Secure authentication** → IMDSv2 enforced  
+
+<br>

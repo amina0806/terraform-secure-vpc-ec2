@@ -49,7 +49,7 @@ resource "aws_vpc_endpoint" "s3_gw" {
   tags              = merge(var.tags, { Name = "${var.name_prefix}-vpce-s3" })
 }
 
-# KMS for logs (as you had)
+# KMS for logs 
 resource "aws_kms_key" "logs" {
   description         = "CMK for central logs (VPC Flow Logs to S3)"
   enable_key_rotation = true

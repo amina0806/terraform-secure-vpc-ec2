@@ -31,13 +31,13 @@ It evolves across **three steps**, each adding stronger security and compliance 
 
 ---
 
-##  ISO/IEC 27001 Annex A Coverage  
+## 📑 ISO/IEC 27001 Annex A Coverage  
 
 | Step | Controls Implemented |
 |------|-----------------------|
-| **Step 1** | A.8.24 Data leakage prevention (SG rules)<br>A.5.23 Cloud security (subnet segregation) |
-| **Step 2** | A.8.20 Use of cryptography (EBS encryption)<br>A.8.28 Secure authentication (IMDSv2)<br>A.8.16 Identity & access control (IAM role for SSM)<br>A.8.24 Data leakage prevention (no public IP)<br>A.5.23 Cloud security (bastionless via SSM) |
-| **Step 3** | A.12.4 Logging & monitoring (Flow Logs to S3)<br>A.8.20 Use of cryptography (SSE-KMS, CMK)<br>A.8.24 Data leakage prevention (VPC endpoints)<br>A.5.23 Cloud security (private-only + audit trail)<br>A.8.16 Identity & access control (SSM least privilege) |
+| **Step 1** | A.8.12 Data leakage prevention (Security Group rules)<br>A.5.23 Information security for use of cloud services (subnet segregation) |
+| **Step 2** | A.8.24 Use of cryptography (EBS encryption)<br>A.8.28 Secure authentication (IMDSv2)<br>A.8.16 Identity and access control (IAM role for SSM)<br>A.8.12 Data leakage prevention (no public IP, egress-only networking)<br>A.5.23 Information security for use of cloud services (bastionless via SSM) |
+| **Step 3** | A.8.15 Logging (VPC Flow Logs)<br>A.8.16 Monitoring activities (Flow Logs to encrypted S3 with restricted policy)<br>A.8.24 Use of cryptography (EBS default encryption, SSE-KMS, CMK)<br>A.8.12 Data leakage prevention (VPC Endpoints restrict traffic)<br>A.5.23 Information security for use of cloud services (private-only design with centralized audit trail)<br>A.8.16 Identity and access control (SSM least privilege)<br>A.8.28 Secure authentication (IMDSv2 enforced) |
 
 📄 Full mappings: [`docs/iso27001-mapping.md`](docs/iso27001-mapping.md)  
 

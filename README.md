@@ -297,11 +297,13 @@ terraform-secure-vpc-ec2/
 ---
 
 ## ISO/IEC 27001 Annex A Mapping
-- **A.8.20 Use of cryptography** → EBS default encryption, SSE-KMS for logs  
-- **A.12.4 Logging & monitoring** → VPC Flow Logs stored securely in S3  
-- **A.8.24 Data leakage prevention** → VPC Endpoints restrict data paths  
-- **A.5.23 Cloud security** → Private-only design with centralized audit trail  
+- **A.8.24 Use of cryptography** → EBS default encryption, SSE-KMS for logs  
+- **A.8.15 Logging** → VPC Flow Logs capture all traffic events  
+- **A.8.16 Monitoring activities** → Logs delivered to encrypted S3 bucket with restricted access policy  
+- **A.8.12 Data leakage prevention** → VPC Endpoints restrict traffic paths  
+- **A.5.23 Information security for use of cloud services** → Private-only design with centralized audit trail  
 - **A.8.16 Identity & access control** → IAM role for SSM (least privilege)  
 - **A.8.28 Secure authentication** → IMDSv2 enforced  
+
 
 <br>

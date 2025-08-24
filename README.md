@@ -303,6 +303,6 @@ terraform-secure-vpc-ec2/
 - **A.8.16 Identity & access control** → IAM role for SSM (least privilege)  
 - **A.8.28 Secure authentication** → IMDSv2 enforced  
 
----
+
 
 <br>
